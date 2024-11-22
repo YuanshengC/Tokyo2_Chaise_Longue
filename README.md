@@ -1,6 +1,6 @@
 # Tokyo2_Chaise_Longue
 A redesign work of Tokyo chaise longue of Cassina
-![Tokyo2 Chaise Longue](https://imgse.com/i/pAfdxgK)
+[![pAfdxgK.png](https://s21.ax1x.com/2024/11/23/pAfdxgK.png)](https://imgse.com/i/pAfdxgK)
 
 This is a web built with [Three.js](https://threejs.org/) to showcase the Tokyo2 Chaise Longue model.
 
