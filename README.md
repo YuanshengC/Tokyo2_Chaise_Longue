@@ -5,7 +5,7 @@
 This is a web built with [Three.js](https://threejs.org/) to showcase the [Tokyo2 Chaise Longue](https://tokyo2-chaise-longue.yuansheng-chen.top/) model. 
 
 ## Brief
-This page is part of a project presented by the **Laboratorio di Sintesi Finale** of the **Politecnico di Milano**. 
+This webpage is part of a project presented by the **Laboratorio di Sintesi Finale** of the **Politecnico di Milano**. 
 Tokyo2 Chaise Longue is a redesigned version of the iconic **Cassina Tokyo2 Chaise Longue**. 
 The goal of the project was to redesign a Cassina product, making it more sustainable, present the product through multiple channels and offering an innovative and interactive showcase.
 
