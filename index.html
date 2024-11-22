@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Tokyo2 Chaise Longue</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: "Roboto Flex", sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 24px;
+            overscroll-behavior: none;
+        }
+
+        a {
+            color: #ef333f;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        hr {
+            border: #ababab;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        a,
+        button,
+        input,
+        select {
+            pointer-events: auto;
+        }
+
+        .navbar {
+            position: fixed;
+            width: 100vw;
+            top: 0;
+            left: 0;
+            max-width: 100vw;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            z-index: 9998;
+        }
+
+        .logo img {
+            margin-left: 1rem;
+            height: 1.5rem;
+        }
+
+
+        .icons {
+            margin-right: 1rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .icon {
+            width: 20px;
+            height: auto;
+        }
+
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            z-index: 9999;
+        }
+
+        #progressBar {
+            width: 300px;
+            height: 3px;
+            background-color: #f0f0f0;
+            margin-top: 20px;
+            border-radius: 1.5px;
+            overflow: hidden;
+        }
+
+        #progressBarFill {
+            height: 100%;
+            background-color: #ef333f;
+            width: 0%;
+            transition: width 0.2s ease-out;
+            border-radius: 1.5px;
+        }
+
+        #logo {
+            width: 250px;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            #progressBar {
+                width: 200px;
+            }
+
+
+
+            #logo {
+                width: 180px;
+                height: auto;
+            }
+        }
+
+        .container {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+
+        .floating-container {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 998;
+        }
+
+
+
+        .popup {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 15rem;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            transform-origin: bottom right;
+            transition: all 0.3s ease-out;
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+            z-index: 997;
+        }
+
+        .popup.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            z-index: 997;
+        }
+
+        .popup-title {
+            display: flex;
+            font-weight: 800;
+            font-size: 18px;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            margin-top: 0;
+            margin-bottom: 0.2rem;
+            color: #1f2937;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            color: #4b5563;
+            margin: 0;
+        }
+
+        .popup-bottom {
+            display: flex;
+            font-size: 10px;
+            line-height: 1.5;
+            color: #4a4a4a;
+            justify-content: left;
+            margin: 0;
+        }
+
+        .button {
+            position: relative;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .button:hover {
+            background-color: #2563eb;
+        }
+
+
+        .svg-r {
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+        }
+
+        .button.active .svg-r {
+            transform: rotate(180deg);
+        }
+
+        #svg-icon {
+            position: fixed;
+            left: 1rem;
+            bottom: 1rem;
+            cursor: pointer;
+            z-index: 999;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+        }
+
+        #svg-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        #hdrButtons {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            left: 1rem;
+            bottom: 1rem;
+            z-index: 999;
+        }
+
+        #hdrButtons button {
+            min-width: 48px;
+            height: 42px;
+            padding: 0 1.4rem;
+            border-radius: 21px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: white;
+            font-family: "Roboto Flex", sans-serif;
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.02em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #hdrButtons button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #hdrButtons button.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="loadingScreen">
+        <img id="logo" src="/public/logo.svg" alt="logo">
+        <div id="progressBar">
+            <div id="progressBarFill"></div>
+        </div>
+    </div>
+
+    <div class="navbar">
+
+        <div class="logo">
+            <img src="/public/logo.svg" alt="Logo" />
+        </div>
+
+
+        <div class="icons">
+            <img src="/public/svgexport-4.svg"  class="icon" />
+            <img src="/public/svgexport-6.svg"  class="icon" />
+        </div>
+    </div>
+
+    <div class="floating-container">
+        <div class="popup">
+            <h3 class="popup-title">Disclaimer</h3>
+            <p class="popup-content">This webpage is exclusively for presenting a course assignment. The <a
+                    href="https://www.cassina.com/it/it.html">"Cassina"</a>
+                trademark and related products are the property of Cassina S.p.A. This progect is not affiliated with
+                Cassina S.p.A. in any way and is not intended for commercial use.</p>
+            <hr />
+            <p class="popup-bottom"> Copyright © 2024 Yuansheng C. <br>All rights reserved.</p>
+        </div>
+
+        <button class="button">
+            <svg class="svg-r" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <g fill-rule="evenodd">
+                    <circle cx="12" cy="12" r="12" fill="#1032CF"></circle>
+                    <path
+                        d="M15.094 13.978c-1.146 0-1.946-.813-1.946-1.978s.8-1.978 1.946-1.978c1.145 0 1.945.813 1.945 1.978s-.8 1.978-1.945 1.978M9.07 10.022h3.883l-.094.09c-.537.515-.844 1.203-.844 1.888 0 1.738 1.294 3 3.079 3 1.786 0 3.082-1.262 3.082-3s-1.296-3-3.082-3H9.079C7.295 9 6 10.262 6 12s1.295 3 3.079 3h2.144v-1.022H9.07c-1.136 0-1.932-.813-1.937-1.978 0-1.146.815-1.978 1.937-1.978"
+                        fill="#FFFFFF"></path>
+                </g>
+            </svg>
+        </button>
+    </div>
+
+    <div id="hdrButtons">
+        <button onclick="switchHDR('/public/blouberg_sunrise_2_1k.hdr')">
+            <span>Beach</span>
+        </button>
+        <button onclick="switchHDR('/public/drackenstein_quarry_2k.hdr')">
+            <span>Gardens</span>
+        </button>
+        <button data-hdr="whiteStudio" onclick="switchToWhiteStudio()">
+            <span>Showroom</span>
+        </button>
+    </div>
+
+
+
+    <script>
+        const button = document.querySelector('.button');
+        const popup = document.querySelector('.popup');
+
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isVisible = popup.classList.contains('show');
+            if (isVisible) {
+                popup.classList.remove('show');
+                button.classList.remove('active');
+            } else {
+                popup.classList.add('show');
+                button.classList.toggle('active');
+            }
+            popup.style.pointerEvents = isVisible ? 'none' : 'auto';
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!popup.contains(event.target) && !button.contains(event.target)) {
+                popup.classList.remove('show');
+                button.classList.remove('active');
+                popup.style.pointerEvents = 'none';
+            }
+        });
+    </script>
+
+    <script type="module">
+        import * as THREE from '/node_modules/three/build/three.module.js';
+        import { GUI } from '/node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
+        import { OrbitControls } from '/node_modules/three/examples/jsm/controls/OrbitControls.js';
+        import { GroundedSkybox } from '/node_modules/three/examples/jsm/objects/GroundedSkybox.js';
+        import { GLTFLoader } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+        import { DRACOLoader } from '/node_modules/three/examples/jsm/loaders/DRACOLoader.js';
+        import { RGBELoader } from '/node_modules/three/examples/jsm/loaders/RGBELoader.js';
+
+        const params = {
+            height: 15,
+            radius: 100,
+            enabled: true,
+        };
+
+        let camera, scene, renderer, skybox;
+        let currentHDR = '/public/blouberg_sunrise_2_1k.hdr';
+
+
+        const lightingPresets = {
+            '/public/blouberg_sunrise_2_1k.hdr': {
+                toneMappingExposure: 1.2,
+                rotation: 0,
+                position: (-5, 12, 0),
+                shadowMapSize: { width: 1000, height: 1000 }
+            },
+            '/public/drackenstein_quarry_2k.hdr': {
+                toneMappingExposure: 1.0,
+                rotation: 0,
+                position: (-5, 15, 0),
+                shadowMapSize: { width: 500, height: 500 }
+            },
+            'whiteStudio': {
+                toneMappingExposure: 1.0,
+                position: (0, 15, 0),
+                shadowMapSize: { width: 120, height: 120 }
+            }
+        };
+
+        init().then(render);
+
+        async function init() {
+            camera = new THREE.PerspectiveCamera(
+                40,
+                window.innerWidth / window.innerHeight,
+                1,
+                1000
+            );
+            camera.position.set(20, 50, 50);
+            camera.lookAt(0, 4, 0);
+
+            scene = new THREE.Scene();
+
+            const hdrLoader = new RGBELoader();
+            const envMap = await hdrLoader.loadAsync(currentHDR);
+            envMap.mapping = THREE.EquirectangularReflectionMapping;
+
+            skybox = new GroundedSkybox(envMap, params.height, params.radius);
+            skybox.position.y = params.height - 0.01;
+            scene.add(skybox);
+
+            scene.environment = envMap;
+
+            const dracoLoader = new DRACOLoader();
+            dracoLoader.setDecoderPath('/node_modules/three/examples/jsm/libs/draco/gltf/');
+
+            const loader = new GLTFLoader();
+            loader.setDRACOLoader(dracoLoader);
+
+            loader.load('/public/tokyo2.glb', function (gltf) {
+                const tkModel = gltf.scene;
+                tkModel.scale.multiplyScalar(15);
+                tkModel.rotation.y = Math.PI / 3;
+
+                tkModel.traverse(function (node) {
+                    if (node.isMesh) {
+                        node.castShadow = true;
+                        node.receiveShadow = false;
+                    }
+                });
+
+                scene.add(tkModel);
+                render();
+                hideLoadingScreen();
+            }, onProgress);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            const initialPreset = lightingPresets[currentHDR];
+            if (initialPreset) {
+                renderer.toneMappingExposure = initialPreset.toneMappingExposure;
+            }
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.addEventListener('change', render);
+            controls.target.set(0, 7.5, 0);
+            controls.maxPolarAngle = THREE.MathUtils.degToRad(90);
+            controls.maxDistance = 80;
+            controls.minDistance = 20;
+            controls.enablePan = false;
+            controls.update();
+
+            document.body.appendChild(renderer.domElement);
+            window.addEventListener('resize', onWindowResize);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(-5, 15, 0);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 1000;
+            directionalLight.shadow.mapSize.height = 1000;
+            directionalLight.shadow.camera.top = 200;
+            directionalLight.shadow.camera.bottom = -200;
+            directionalLight.shadow.camera.left = -200;
+            directionalLight.shadow.camera.right = 200;
+            directionalLight.shadow.camera.near = -200;
+            directionalLight.shadow.camera.far = 200;
+            scene.add(directionalLight);
+
+            const floorGeometry = new THREE.PlaneGeometry(100, 100);
+            const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.2 });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = - Math.PI / 2;
+            floor.position.y = 0;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            renderer.shadowMap.enabled = true;
+
+
+
+            window.switchToWhiteStudio = function () {
+                try {
+                    scene.background = null;
+                    scene.children = scene.children.filter(child => !(child.isAmbientLight));
+
+                    const preset = lightingPresets['whiteStudio'];
+                    scene.background = new THREE.Color(0xd0d0d0);
+
+                    scene.environment = null;
+                    if (skybox) {
+                        scene.remove(skybox);
+                        skybox = null;
+                    }
+                    if (preset) {
+                        renderer.toneMappingExposure = preset.toneMappingExposure;
+                        directionalLight.shadow.mapSize.width = preset.shadowMapSize.width;
+                        directionalLight.shadow.mapSize.height = preset.shadowMapSize.height;
+                        directionalLight.shadow.map = null;
+                        directionalLight.position.set = preset.position;
+                    }
+
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 3.3);
+                    scene.add(ambientLight);
+
+                    document.querySelectorAll('#hdrButtons button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.querySelector('#hdrButtons button[data-hdr="whiteStudio"]').classList.add('active');
+
+                    render();
+                    
+                } catch (error) {
+                    console.error('Error switching to white studio:', error);
+                }
+            }
+
+
+
+            window.switchHDR = async function (hdrPath) {
+                try {
+                    scene.background = null;
+                    scene.AmbientLight = null;
+                    scene.children = scene.children.filter(child => !(child.isAmbientLight));
+
+                    const hdrLoader = new RGBELoader();
+                    hdrLoader.setDataType(THREE.FloatType);
+
+                    const newEnvMap = await hdrLoader.loadAsync(hdrPath);
+                    newEnvMap.mapping = THREE.EquirectangularReflectionMapping;
+                    const preset = lightingPresets[hdrPath];
+
+                    if (preset) {
+                        newEnvMap.rotation = preset.rotation;
+                        newEnvMap.needsUpdate = true;
+                    }
+
+                    scene.environment = newEnvMap;
+                    renderer.render(scene, camera);
+
+                    const newSkybox = new GroundedSkybox(newEnvMap, params.height, params.radius);
+                    newSkybox.position.y = params.height - 0.01;
+
+                    if (preset) {
+                        newSkybox.rotation.y = preset.rotation;
+                    }
+                    scene.remove(skybox);
+                    scene.add(newSkybox);
+                    skybox = newSkybox;
+
+                    if (preset) {
+                        renderer.toneMappingExposure = preset.toneMappingExposure;
+                        directionalLight.shadow.mapSize.width = preset.shadowMapSize.width;
+                        directionalLight.shadow.mapSize.height = preset.shadowMapSize.height;
+                        directionalLight.shadow.map = null;
+                        directionalLight.position.set = preset.position;
+                    }
+
+                    document.querySelectorAll('#hdrButtons button').forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.getAttribute('onclick').includes(hdrPath)) {
+                            btn.classList.add('active');
+                        }
+                    });
+
+                    currentHDR = hdrPath;
+                    render();
+                    
+                } catch (error) {
+                    console.error('Error loading HDR:', error);
+                }
+            }
+
+            document.querySelector('#hdrButtons button').classList.add('active');
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            render();
+        }
+
+        function render() {
+            renderer.render(scene, camera);
+        }
+
+        function onProgress(xhr) {
+            if (xhr.lengthComputable) {
+                const percentComplete = (xhr.loaded / xhr.total) * 100;
+                document.getElementById('progressBarFill').style.width = percentComplete + '%';
+            }
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.style.display = 'none';
+        }
+
+        window.addEventListener('load', () => {
+            document.querySelector(`#hdrButtons button[onclick*="${currentHDR}"]`)?.classList.add('active');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.style.display = 'flex';
+            requestAnimationFrame(() => {
+                loadingScreen.classList.add('show');
+            });
+        });
+    </script>
+</body>
+
+</html>
