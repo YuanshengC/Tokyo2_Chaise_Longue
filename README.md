@@ -1,4 +1,4 @@
-# Tokyo2_Chaise_Longue
+# Tokyo2 Chaise Longue
 
 [![pAfdxgK.png](https://s21.ax1x.com/2024/11/23/pAfdxgK.png)](https://imgse.com/i/pAfdxgK)
 
